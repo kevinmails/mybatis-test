@@ -26,5 +26,7 @@ public class UserDao {
         return sqlSession.insert("UserMapper.addUser", user) == 1 ? true : false;
     }
 
-
+    public boolean updateUserInfo(User user) {
+        return sqlSession.update("UserMapper.updateUserInfo", user) == 1 ? true : false;
+    }
 }

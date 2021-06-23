@@ -2,14 +2,7 @@ package com.kevin.service;
 
 import com.kevin.dao.User;
 import com.kevin.dao.UserDao;
-import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author kevin
@@ -30,5 +23,10 @@ public class UserService {
 
     public boolean addUser(User user) {
         return userDao.addUser(user);
+    }
+
+    public boolean updateUserInfo(User user) {
+
+        return userDao.updateUserInfo(user);
     }
 }

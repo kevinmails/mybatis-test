@@ -11,12 +11,16 @@
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <select id="selectUser" resultType="com.kevin.dao.User" resultMap="userResult" >
+    <select id="selectUser" resultType="com.kevin.dao.User" resultMap="userResult">
     select id, user_name, order_no, create_time from t_user where id = #{id}
     </select>
 
     <insert id="addUser" parameterType="com.kevin.dao.User">
         insert into t_user(id, user_name, order_no) values( #{id}, #{userName}, #{orderNo})
     </insert>
+
+    <update id="updateUserInfo" parameterType="com.kevin.dao.User">
+       update t_user set order_no = #{orderNo} where id = #{id}
+    </update>
 
 </mapper>

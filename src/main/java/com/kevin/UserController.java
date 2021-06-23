@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -30,7 +31,7 @@ public class UserController {
 
 
     @ResponseBody
-    @RequestMapping(value = "getUser/{id}")
+    @RequestMapping(value = "queryUser/{id}")
     public User getUser(@PathVariable long id) {
         User user = service.getUser(id);
         System.out.println(user);
@@ -44,18 +45,42 @@ public class UserController {
 
         context.publishEvent(new OrderCreatedEvent(this, user));
         log.info("用户：{}下单结束！", user.getUserName());
-        return "success";
+
+        if (addUser){
+            return "success";
+        }
+        return "error";
     }
 
     @RequestMapping(value = "index")
     public String getIndex(Model model) {
-        User u = User.builder().id(this.getRandomIntInRange(10000, 99999)).userName("kevin")
+        Map<String, String> osEnv = System.getenv();
+        String sysUser = osEnv.get("USERNAME");
+        osEnv.entrySet().forEach(entry -> log.info("{}", entry));
+        User u = User.builder().id(this.getRandomLongInRange(10000, 99999)).userName(sysUser)
                 .orderNo(UUID.randomUUID().toString()).build();
         model.addAttribute("user", u);
         return "index";
     }
 
-    private long getRandomIntInRange(int min, int max) {
+    private long getRandomLongInRange(int min, int max) {
         return ThreadLocalRandom.current().longs(min, (max + 1)).limit(1).findFirst().getAsLong();
     }
+
+    @RequestMapping(value = "update", method = RequestMethod.GET)
+    public String pageUpdateInit(Model model) {
+        model.addAttribute("user2", User.builder().build());
+        return "update";
+    }
+
+    @RequestMapping(value = "updateUserInfo", method = RequestMethod.POST)
+    public String updateUserInfo(@ModelAttribute User user) {
+        log.info("user:{}", user);
+        boolean updated = service.updateUserInfo(user);
+        if (updated) {
+            return "success";
+        }
+        return "error";
+    }
+
 }
